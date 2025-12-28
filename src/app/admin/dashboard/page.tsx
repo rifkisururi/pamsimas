@@ -17,9 +17,11 @@ export default async function AdminDashboardPage() {
       }),
     ]);
 
+  type InvoiceRow = (typeof monthInvoices)[number];
+
   const totalRevenue = monthInvoices
-    .filter((item) => item.status === "PAID")
-    .reduce((sum, item) => sum + item.total, 0);
+    .filter((item: InvoiceRow) => item.status === "PAID")
+    .reduce((sum: number, item: InvoiceRow) => sum + item.total, 0);
 
   return (
     <PageShell title="Dashboard" subtitle="Ringkasan bulan berjalan">
