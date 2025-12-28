@@ -10,7 +10,7 @@ export async function GET() {
 
   type InvoiceRow = (typeof invoices)[number];
 
-  const rows = [
+  const rows: (string | number)[][] = [
     [
       "nomor_pelanggan",
       "nama",
@@ -33,7 +33,11 @@ export async function GET() {
     ]),
   ];
 
-  const csv = rows.map((row) => row.map((cell) => `"${cell}"`).join(",")).join("\n");
+  const csv = rows
+    .map((row: (string | number)[]) =>
+      row.map((cell: string | number) => `"${cell}"`).join(",")
+    )
+    .join("\n");
 
   return new Response(csv, {
     headers: {
