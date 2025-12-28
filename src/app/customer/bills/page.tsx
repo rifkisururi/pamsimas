@@ -18,7 +18,9 @@ export default async function CustomerBillsPage() {
 
   type InvoiceRow = (typeof invoices)[number];
 
-  const current = invoices.find((invoice) => invoice.billingMonth === billingMonth);
+  const current = invoices.find(
+    (invoice: InvoiceRow) => invoice.billingMonth === billingMonth
+  );
   const history = invoices.filter(
     (invoice: InvoiceRow) => invoice.billingMonth !== billingMonth
   );
