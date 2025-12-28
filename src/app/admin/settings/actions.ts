@@ -18,7 +18,7 @@ export async function updateSettings(formData: FormData) {
     dueDayOfMonth: formData.get("dueDayOfMonth"),
   });
 
-  if (!data.success) return { ok: false };
+  if (!data.success) return;
 
   await requireRole("OWNER");
   const existing = await prisma.setting.findFirst();
@@ -32,5 +32,4 @@ export async function updateSettings(formData: FormData) {
   }
 
   revalidatePath("/admin/settings");
-  return { ok: true };
 }

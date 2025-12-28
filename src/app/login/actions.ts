@@ -18,7 +18,7 @@ export async function loginAction(formData: FormData) {
   });
 
   if (!data.success) {
-    return { ok: false, message: "Email atau password tidak valid." };
+    return;
   }
 
   const user = await prisma.user.findUnique({
@@ -27,12 +27,12 @@ export async function loginAction(formData: FormData) {
   });
 
   if (!user) {
-    return { ok: false, message: "Pengguna tidak ditemukan." };
+    return;
   }
 
   const match = await bcrypt.compare(data.data.password, user.passwordHash);
   if (!match) {
-    return { ok: false, message: "Password salah." };
+    return;
   }
 
   const token = signSession({
@@ -52,8 +52,7 @@ export async function loginAction(formData: FormData) {
 export async function sendOtpAction(formData: FormData) {
   const email = String(formData.get("email") || "");
   if (!email) {
-    return { ok: false, message: "Masukkan email untuk OTP." };
+    return;
   }
   console.log(`[OTP MOCK] Kirim OTP ke ${email}: 123456`);
-  return { ok: true, message: "OTP dikirim (mock). Cek console." };
 }

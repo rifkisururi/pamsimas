@@ -19,17 +19,17 @@ export async function recordPayment(formData: FormData) {
     redirectTo: formData.get("redirectTo") || undefined,
   });
 
-  if (!data.success) return { ok: false };
+  if (!data.success) return;
 
   const session = await getSession();
   if (!session || !["OWNER", "COLLECTOR"].includes(session.user.role)) {
-    return { ok: false };
+    return;
   }
   const invoice = await prisma.invoice.findUnique({
     where: { id: data.data.invoiceId },
   });
 
-  if (!invoice) return { ok: false };
+  if (!invoice) return;
 
   await prisma.payment.create({
     data: {

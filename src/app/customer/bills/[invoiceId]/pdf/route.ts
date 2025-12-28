@@ -1,19 +1,23 @@
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+import type { NextRequest } from "next/server";
 import { prisma } from "@/lib/db";
 import { getSession } from "@/lib/auth";
 import { formatCurrency, formatMonthLabel } from "@/lib/utils";
 
-export async function GET(
-  _request: Request,
-  { params }: { params: { invoiceId: string } }
-) {
+type RouteContext = {
+  params: { invoiceId: string } | Promise<{ invoiceId: string }>;
+};
+
+export async function GET(_request: NextRequest, context: RouteContext) {
+  const resolvedParams = await Promise.resolve(context.params);
+  const invoiceId = resolvedParams.invoiceId;
   const session = await getSession();
   if (!session || session.user.role !== "CUSTOMER") {
     return new Response("Unauthorized", { status: 401 });
   }
 
   const invoice = await prisma.invoice.findFirst({
-    where: { id: params.invoiceId, customerId: session.user.customerId || "" },
+    where: { id: invoiceId, customerId: session.user.customerId || "" },
     include: { customer: true },
   });
 
@@ -59,7 +63,7 @@ export async function GET(
 
   const pdfBytes = await pdfDoc.save();
 
-  return new Response(pdfBytes, {
+  return new Response(Buffer.from(pdfBytes), {
     headers: {
       "Content-Type": "application/pdf",
       "Content-Disposition": `attachment; filename="invoice-${invoice.billingMonth}.pdf"`,

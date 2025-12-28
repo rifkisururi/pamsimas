@@ -21,11 +21,11 @@ export async function saveReading(formData: FormData) {
   });
 
   if (!parsed.success) {
-    return { ok: false, message: "Input tidak valid." };
+    return;
   }
 
   if (parsed.data.meterAkhir < parsed.data.meterAwal) {
-    return { ok: false, message: "Meter akhir harus >= meter awal." };
+    return;
   }
 
   await requireRole("OFFICER");

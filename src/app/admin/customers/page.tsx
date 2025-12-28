@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/Input";
 import { Badge } from "@/components/ui/Badge";
 import { createCustomer, updateCustomer, deleteCustomer } from "./actions";
 import { requireSession } from "@/lib/require-session";
+import { Prisma } from "@prisma/client";
 
 type PageProps = {
   searchParams?: { q?: string; page?: string };
@@ -20,9 +21,14 @@ export default async function AdminCustomersPage({ searchParams }: PageProps) {
   const whereClause = query
     ? {
         OR: [
-          { name: { contains: query, mode: "insensitive" } },
-          { nomor_pelanggan: { contains: query, mode: "insensitive" } },
-          { desa: { contains: query, mode: "insensitive" } },
+          { name: { contains: query, mode: Prisma.QueryMode.insensitive } },
+          {
+            nomor_pelanggan: {
+              contains: query,
+              mode: Prisma.QueryMode.insensitive,
+            },
+          },
+          { desa: { contains: query, mode: Prisma.QueryMode.insensitive } },
         ],
       }
     : undefined;

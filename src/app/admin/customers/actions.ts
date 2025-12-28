@@ -33,18 +33,17 @@ export async function createCustomer(formData: FormData) {
   });
 
   if (!data.success) {
-    return { ok: false, message: "Data pelanggan belum lengkap." };
+    return;
   }
 
   await requireRole("OWNER");
   await prisma.customer.create({ data: data.data });
   revalidatePath("/admin/customers");
-  return { ok: true };
 }
 
 export async function updateCustomer(formData: FormData) {
   const id = String(formData.get("id") || "");
-  if (!id) return { ok: false, message: "ID pelanggan tidak ditemukan." };
+  if (!id) return;
 
   const data = customerSchema.safeParse({
     nomor_pelanggan: formData.get("nomor_pelanggan"),
@@ -60,7 +59,7 @@ export async function updateCustomer(formData: FormData) {
   });
 
   if (!data.success) {
-    return { ok: false, message: "Data pelanggan belum lengkap." };
+    return;
   }
 
   await requireRole("OWNER");
@@ -70,14 +69,12 @@ export async function updateCustomer(formData: FormData) {
   });
 
   revalidatePath("/admin/customers");
-  return { ok: true };
 }
 
 export async function deleteCustomer(formData: FormData) {
   const id = String(formData.get("id") || "");
-  if (!id) return { ok: false };
+  if (!id) return;
   await requireRole("OWNER");
   await prisma.customer.delete({ where: { id } });
   revalidatePath("/admin/customers");
-  return { ok: true };
 }

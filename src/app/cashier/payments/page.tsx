@@ -6,6 +6,7 @@ import { Toast } from "@/components/ui/Toast";
 import { formatCurrency, getMonthKey } from "@/lib/utils";
 import { recordPayment } from "@/app/admin/payments/actions";
 import { requireSession } from "@/lib/require-session";
+import { Prisma } from "@prisma/client";
 
 type PageProps = {
   searchParams?:
@@ -32,9 +33,18 @@ export default async function CashierPaymentsPage({ searchParams }: PageProps) {
             customer: {
               is: {
                 OR: [
-                  { name: { contains: query, mode: "insensitive" } },
-                  { nomor_pelanggan: { contains: query, mode: "insensitive" } },
-                  { desa: { contains: query, mode: "insensitive" } },
+                  {
+                    name: { contains: query, mode: Prisma.QueryMode.insensitive },
+                  },
+                  {
+                    nomor_pelanggan: {
+                      contains: query,
+                      mode: Prisma.QueryMode.insensitive,
+                    },
+                  },
+                  {
+                    desa: { contains: query, mode: Prisma.QueryMode.insensitive },
+                  },
                 ],
               },
             },

@@ -56,7 +56,6 @@ export async function generateInvoices() {
   }
 
   revalidatePath("/admin/billing");
-  return { ok: true };
 }
 
 export async function issueInvoices() {
@@ -68,5 +67,4 @@ export async function issueInvoices() {
   });
 
   revalidatePath("/admin/billing");
-  return { ok: true };
 }
