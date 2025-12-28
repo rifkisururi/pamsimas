@@ -1,4 +1,4 @@
-import type { Role } from "@prisma/client";
+import type { Role } from "@/lib/roles";
 import { getSession } from "@/lib/auth";
 
 export async function requireRole(role: Role) {
