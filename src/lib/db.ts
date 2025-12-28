@@ -1,9 +1,11 @@
-import { PrismaClient } from "@prisma/client";
+import pkg from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 
+const { PrismaClient } = pkg;
+
 const globalForPrisma = globalThis as unknown as {
-  prisma?: PrismaClient;
+  prisma?: InstanceType<typeof PrismaClient>;
 };
 
 export const prisma =
