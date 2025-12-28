@@ -16,6 +16,8 @@ export default async function AdminBillingPage() {
     orderBy: { createdAt: "desc" },
   });
 
+  type InvoiceRow = (typeof invoices)[number];
+
   return (
     <PageShell
       title="Tagihan"
@@ -42,7 +44,7 @@ export default async function AdminBillingPage() {
         </form>
       </Card>
 
-      {invoices.map((invoice) => (
+      {invoices.map((invoice: InvoiceRow) => (
         <Card key={invoice.id} className="space-y-2">
           <div className="flex items-center justify-between">
             <div>
