@@ -1,0 +1,139 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  OWNER
+  OFFICER
+  CUSTOMER
+  COLLECTOR
+}
+
+enum InvoiceStatus {
+  DRAFT
+  ISSUED
+  PAID
+  OVERDUE
+  VOID
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role
+  customerId   String?  @unique
+  customer     Customer? @relation(fields: [customerId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  auditLogs AuditLog[]
+}
+
+model Customer {
+  id             String   @id @default(cuid())
+  nomor_pelanggan String   @unique
+  name           String
+  rt             String
+  rw             String
+  desa           String
+  nomor_wa       String
+  email          String
+  is_active      Boolean  @default(true)
+  alamat         String?
+  catatan        String?
+  tanggal_daftar DateTime @default(now())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  meterReadings MeterReading[]
+  invoices      Invoice[]
+  payments      Payment[]
+  user          User?
+
+  @@index([nomor_pelanggan])
+  @@index([desa])
+  @@index([rt, rw])
+}
+
+model MeterReading {
+  id           String   @id @default(cuid())
+  customerId   String
+  customer     Customer @relation(fields: [customerId], references: [id])
+  billingMonth String
+  meterAwal    Int
+  meterAkhir   Int
+  pemakaian    Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([customerId, billingMonth])
+}
+
+model Setting {
+  id              String   @id @default(cuid())
+  biayaBeban      Int      @default(3000)
+  tarifPerM3      Int      @default(0)
+  dueDayOfMonth   Int      @default(10)
+  timezone        String   @default("Asia/Jakarta")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Invoice {
+  id            String        @id @default(cuid())
+  customerId    String
+  customer      Customer      @relation(fields: [customerId], references: [id])
+  billingMonth  String
+  meterAwal     Int
+  meterAkhir    Int
+  pemakaian     Int
+  tarifPerM3    Int
+  biayaBeban    Int
+  total         Int
+  dueDate       DateTime
+  status        InvoiceStatus @default(DRAFT)
+  issuedAt      DateTime?
+  paidAt        DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  payments Payment[]
+
+  @@unique([customerId, billingMonth])
+}
+
+model Payment {
+  id         String   @id @default(cuid())
+  invoiceId  String
+  invoice    Invoice  @relation(fields: [invoiceId], references: [id])
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+  amount     Int
+  paidAt     DateTime @default(now())
+  method     String   @default("CASH")
+  createdAt  DateTime @default(now())
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  action    String
+  metadata  Json?
+  createdAt DateTime @default(now())
+}
+
+model NotificationLog {
+  id        String   @id @default(cuid())
+  channel   String
+  recipient String
+  payload   Json
+  status    String
+  createdAt DateTime @default(now())
+}
