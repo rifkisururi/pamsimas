@@ -7,7 +7,6 @@ import Link from "next/link";
 import { getMonthKey } from "@/lib/utils";
 import { requireSession } from "@/lib/require-session";
 import { BottomNav } from "@/components/ui/BottomNav";
-import { Prisma } from "@prisma/client";
 
 type PageProps = {
   searchParams?:
@@ -30,16 +29,16 @@ export default async function OfficerReadingsPage({ searchParams }: PageProps) {
       ...(query
         ? {
             OR: [
-              { name: { contains: query, mode: Prisma.QueryMode.insensitive } },
+              { name: { contains: query, mode: "insensitive" as const } },
               {
                 nomor_pelanggan: {
                   contains: query,
-                  mode: Prisma.QueryMode.insensitive,
+                  mode: "insensitive" as const,
                 },
               },
-              { desa: { contains: query, mode: Prisma.QueryMode.insensitive } },
-              { rt: { contains: query, mode: Prisma.QueryMode.insensitive } },
-              { rw: { contains: query, mode: Prisma.QueryMode.insensitive } },
+              { desa: { contains: query, mode: "insensitive" as const } },
+              { rt: { contains: query, mode: "insensitive" as const } },
+              { rw: { contains: query, mode: "insensitive" as const } },
             ],
           }
         : {}),
