@@ -2,15 +2,22 @@ import pkg from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 
-const { PrismaClient } = pkg;
+const PrismaClientCtor =
+  (pkg as unknown as { PrismaClient?: new (...args: any[]) => any })
+    .PrismaClient ??
+  (pkg as unknown as { default?: new (...args: any[]) => any }).default;
+
+if (!PrismaClientCtor) {
+  throw new Error("PrismaClient not found in @prisma/client");
+}
 
 const globalForPrisma = globalThis as unknown as {
-  prisma?: InstanceType<typeof PrismaClient>;
+  prisma?: InstanceType<typeof PrismaClientCtor>;
 };
 
 export const prisma =
   globalForPrisma.prisma ??
-  new PrismaClient({
+  new PrismaClientCtor({
     log: ["error", "warn"],
     adapter: new PrismaPg(
       new Pool({
