@@ -42,6 +42,8 @@ export default async function AdminCustomersPage({ searchParams }: PageProps) {
     prisma.customer.count({ where: whereClause }),
   ]);
 
+  type CustomerRow = (typeof customers)[number];
+
   const hasNext = page * pageSize < total;
 
   return (
@@ -86,7 +88,7 @@ export default async function AdminCustomersPage({ searchParams }: PageProps) {
         </form>
       </Card>
 
-      {customers.map((customer) => (
+      {customers.map((customer: CustomerRow) => (
         <Card key={customer.id} className="space-y-3">
           <div className="flex items-center justify-between">
             <div>

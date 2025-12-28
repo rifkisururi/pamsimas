@@ -52,6 +52,8 @@ export default async function CashierPaymentsPage({ searchParams }: PageProps) {
     orderBy: { dueDate: "asc" },
   });
 
+  type InvoiceRow = (typeof invoices)[number];
+
   return (
     <PageShell
       title="Pembayaran"
@@ -73,7 +75,7 @@ export default async function CashierPaymentsPage({ searchParams }: PageProps) {
       {success === "1" ? (
         <Toast message="Pembayaran berhasil disimpan." durationMs={3000} />
       ) : null}
-      {invoices.map((invoice) => (
+      {invoices.map((invoice: InvoiceRow) => (
         <Card key={invoice.id} className="space-y-3">
           <div>
             <p className="text-sm font-semibold text-black">

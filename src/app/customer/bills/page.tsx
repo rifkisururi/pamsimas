@@ -16,8 +16,12 @@ export default async function CustomerBillsPage() {
     orderBy: { billingMonth: "desc" },
   });
 
+  type InvoiceRow = (typeof invoices)[number];
+
   const current = invoices.find((invoice) => invoice.billingMonth === billingMonth);
-  const history = invoices.filter((invoice) => invoice.billingMonth !== billingMonth);
+  const history = invoices.filter(
+    (invoice: InvoiceRow) => invoice.billingMonth !== billingMonth
+  );
 
   return (
     <>
@@ -56,7 +60,7 @@ export default async function CustomerBillsPage() {
         <div className="mt-2 text-xs font-semibold uppercase text-black/40">
           Riwayat
         </div>
-        {history.map((invoice) => (
+        {history.map((invoice: InvoiceRow) => (
           <Card key={invoice.id} className="space-y-2">
             <div className="flex items-center justify-between">
               <p className="text-sm font-semibold text-black">

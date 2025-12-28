@@ -58,6 +58,8 @@ export default async function OfficerReadingsPage({ searchParams }: PageProps) {
     },
   });
 
+  type CustomerRow = (typeof customers)[number];
+
   return (
     <>
       <PageShell
@@ -88,7 +90,7 @@ export default async function OfficerReadingsPage({ searchParams }: PageProps) {
             Sudah ada catatan untuk bulan ini.
           </Card>
         ) : null}
-        {customers.map((customer) => {
+        {customers.map((customer: CustomerRow) => {
           const isRecorded = customer.meterReadings.length > 0;
           return (
             <Card key={customer.id} className="space-y-3">
