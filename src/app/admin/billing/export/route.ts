@@ -8,6 +8,8 @@ export async function GET() {
     include: { customer: true },
   });
 
+  type InvoiceRow = (typeof invoices)[number];
+
   const rows = [
     [
       "nomor_pelanggan",
@@ -19,7 +21,7 @@ export async function GET() {
       "total",
       "status",
     ],
-    ...invoices.map((invoice) => [
+    ...invoices.map((invoice: InvoiceRow) => [
       invoice.customer.nomor_pelanggan,
       invoice.customer.name,
       invoice.customer.desa,
